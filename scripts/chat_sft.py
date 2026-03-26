@@ -26,11 +26,7 @@ from nanochat.engine import Engine
 from scripts.chat_eval import run_chat_eval
 
 from tasks.common import TaskMixture
-from tasks.gsm8k import GSM8K
-from tasks.mmlu import MMLU
-from tasks.smoltalk import SmolTalk
 from tasks.customjson import CustomJSON
-from tasks.spellingbee import SimpleSpelling, SpellingBee
 
 # -----------------------------------------------------------------------------
 # CLI arguments
@@ -64,8 +60,8 @@ parser.add_argument("--chatcore-every", type=int, default=200, help="evaluate Ch
 parser.add_argument("--chatcore-max-cat", type=int, default=-1, help="max problems per categorical task for ChatCORE")
 parser.add_argument("--chatcore-max-sample", type=int, default=24, help="max problems per generative task for ChatCORE")
 # Data mixture
-parser.add_argument("--mmlu-epochs", type=int, default=3, help="number of epochs of MMLU in training mixture (teaches Multiple Choice)")
-parser.add_argument("--gsm8k-epochs", type=int, default=4, help="number of epochs of GSM8K in training mixture (teaches Math and Tool Use)")
+parser.add_argument("--identity-epochs", type=int, default=2, help="number of epochs of identity conversations in training mixture")
+parser.add_argument("--boundary-epochs", type=int, default=2, help="number of epochs of boundary conversations in training mixture")
 args = parser.parse_args()
 user_config = vars(args).copy()
 # -----------------------------------------------------------------------------
@@ -161,23 +157,20 @@ for group in optimizer.param_groups:
     group["initial_lr"] = group["lr"]
 
 # SFT data mixture and DataLoader
-identity_conversations_filepath = os.path.join(base_dir, "identity_conversations.jsonl")
+# bellechat uses synthetic conversations grounded in pre-1914 knowledge
+general_filepath = os.path.join(base_dir, "general_conversations.jsonl")
+identity_filepath = os.path.join(base_dir, "identity_conversations.jsonl")
+boundary_filepath = os.path.join(base_dir, "boundary_conversations.jsonl")
 train_tasks = [
-    SmolTalk(split="train"), # 460K rows of general conversations
-    CustomJSON(filepath=identity_conversations_filepath), # 1000 rows of synthetic identity conversations
-    CustomJSON(filepath=identity_conversations_filepath), # 2 epochs of these
-    *[MMLU(subset="auxiliary_train", split="train") for _ in range(args.mmlu_epochs)], # 100K rows per epoch
-    *[GSM8K(subset="main", split="train") for _ in range(args.gsm8k_epochs)], # 8K rows per epoch
-    SimpleSpelling(size=200000, split="train"), # 200K rows of Simple Spelling (e.g. spell the word 'apple')
-    SpellingBee(size=80000, split="train"), # 80K rows of Spelling Bee (e.g. how many 'r' are in 'strawberry'?)
+    CustomJSON(filepath=general_filepath),                                              # ~4800 general knowledge conversations
+    *[CustomJSON(filepath=identity_filepath) for _ in range(args.identity_epochs)],     # ~960 identity conversations x2
+    *[CustomJSON(filepath=boundary_filepath) for _ in range(args.boundary_epochs)],     # ~450 boundary conversations x2
 ]
 train_dataset = TaskMixture(train_tasks)
-print0(f"Training mixture: {len(train_dataset):,} rows (MMLU x{args.mmlu_epochs}, GSM8K x{args.gsm8k_epochs})")
+print0(f"Training mixture: {len(train_dataset):,} rows (identity x{args.identity_epochs}, boundary x{args.boundary_epochs})")
 val_dataset = TaskMixture([
-    SmolTalk(split="test"), # 24K rows in test set
-    MMLU(subset="all", split="test", stop=5200), # 14K rows in test set, use only 5.2K to match the train ratios
-    GSM8K(subset="main", split="test", stop=420), # 1.32K rows in test set, use only 420 to match the train ratios
-]) # total: 24K + 14K + 1.32K ~= 39K rows
+    CustomJSON(filepath=general_filepath, start=0, stop=500),   # hold out first 500 general for validation
+])
 # DataLoader is defined here, it emits inputs, targets : 2D tensors of shape (device_batch_size, max_seq_len)
 # A big problem is that we don't know the final num_iterations in advance. So we create
 # these two global variables and update them from within the data generator.
