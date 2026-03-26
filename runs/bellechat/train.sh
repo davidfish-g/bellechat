@@ -54,21 +54,26 @@ python -m scripts.tok_train
 python -m scripts.tok_eval
 
 # Step 2: Pretrain
-echo "=== [2/4] Pretraining (d${DEPTH}) ==="
+echo "=== [2/5] Pretraining (d${DEPTH}) ==="
 torchrun --standalone --nproc_per_node=8 -m scripts.base_train -- \
     --depth="$DEPTH" \
     --device-batch-size=16 \
+    --fp8 \
     --run="$WANDB_RUN"
 
-# Step 3: SFT
-echo "=== [3/4] Supervised fine-tuning ==="
+# Step 3: Evaluate base model
+echo "=== [3/5] Evaluating base model ==="
+torchrun --standalone --nproc_per_node=8 -m scripts.base_eval -- --device-batch-size=16
+
+# Step 4: SFT
+echo "=== [4/5] Supervised fine-tuning ==="
 torchrun --standalone --nproc_per_node=8 -m scripts.chat_sft -- \
     --device-batch-size=16 \
     --chatcore-every=-1 \
     --run="$WANDB_RUN"
 
 # Step 4: Test
-echo "=== [4/4] Testing ==="
+echo "=== [5/5] Testing ==="
 python -m scripts.chat_cli -p "Who are you?"
 python -m scripts.chat_cli -p "Tell me about Mr. Charles Dickens"
 python -m scripts.chat_cli -p "What is a computer?"
