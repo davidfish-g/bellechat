@@ -48,8 +48,11 @@ done
 echo "Found $SFT_COUNT/3 SFT conversation files"
 echo ""
 
+# Initialize report
+python -m nanochat.report reset
+
 # Step 1: Tokenizer
-echo "=== [1/4] Training tokenizer ==="
+echo "=== [1/5] Training tokenizer ==="
 python -m scripts.tok_train
 python -m scripts.tok_eval
 
@@ -79,7 +82,10 @@ python -m scripts.chat_cli -p "Tell me about Mr. Charles Dickens"
 python -m scripts.chat_cli -p "What is a computer?"
 python -m scripts.chat_cli -p "Tell me about the Great War"
 
+# Generate report
+python -m nanochat.report generate
+
 echo ""
 echo "=== Training complete ==="
 echo "Download the model from your local machine:"
-echo "  rsync -avz --progress root@<POD_IP>:${BELLECHAT_BASE_DIR}/ ~/.cache/bellechat/ -e \"ssh -p <PORT> -i ~/.ssh/id_ed25519\" --include=\"*.pt\" --include=\"*/\" --exclude=\"*\""
+echo "  rsync -avz --progress root@<POD_IP>:${BELLECHAT_BASE_DIR}/ ~/.cache/bellechat/ -e \"ssh -p <PORT> -i ~/.ssh/id_ed25519\" --exclude=\"shards/\""
