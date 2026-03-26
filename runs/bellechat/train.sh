@@ -4,12 +4,11 @@
 # Run on an 8xH100 node after setup.sh and data upload.
 #
 # Usage:
-#   bash runs/train.sh                          # default d24, no wandb
-#   bash runs/train.sh d20                      # smaller model
-#   WANDB_RUN=bellechat-v1 bash runs/train.sh   # with wandb logging
+#   screen -S train bash runs/bellechat/train.sh
+#   screen -S train bash runs/bellechat/train.sh d20              # smaller model
+#   WANDB_RUN=my-run screen -S train bash runs/bellechat/train.sh # custom run name
 #
-# Run inside screen for long training:
-#   screen -S train bash runs/train.sh
+# Detach: Ctrl+A then D | Reattach: screen -r train
 #
 set -e
 
@@ -17,7 +16,7 @@ export OMP_NUM_THREADS=1
 export BELLECHAT_BASE_DIR="${BELLECHAT_BASE_DIR:-/workspace/bellechat/.cache/bellechat}"
 
 DEPTH="${1:-24}"
-WANDB_RUN="${WANDB_RUN:-dummy}"
+WANDB_RUN="${WANDB_RUN:-bellechat-d${DEPTH}}"
 
 cd /workspace/bellechat
 source .venv/bin/activate
@@ -28,11 +27,19 @@ echo "Wandb: ${WANDB_RUN}"
 echo "Data:  ${BELLECHAT_BASE_DIR}"
 echo ""
 
+# Verify wandb
+if [ -z "$WANDB_API_KEY" ]; then
+    echo "WARNING: WANDB_API_KEY not set. Training will proceed without logging."
+    echo "         Set it with: export WANDB_API_KEY=your_key_here"
+    echo ""
+    WANDB_RUN=dummy
+fi
+
 # Verify data exists
 SHARD_COUNT=$(ls "$BELLECHAT_BASE_DIR/shards/"*.parquet 2>/dev/null | wc -l | tr -d ' ')
 if [ "$SHARD_COUNT" -eq 0 ]; then
     echo "ERROR: No shards found in $BELLECHAT_BASE_DIR/shards/"
-    echo "Upload data first. See runs/setup.sh for instructions."
+    echo "Upload data first. See runs/bellechat/setup.sh for instructions."
     exit 1
 fi
 echo "Found $SHARD_COUNT shards"
@@ -75,7 +82,7 @@ torchrun --standalone --nproc_per_node=8 -m scripts.chat_sft -- \
     --chatcore-every=-1 \
     --run="$WANDB_RUN"
 
-# Step 4: Test
+# Step 5: Test
 echo "=== [5/5] Testing ==="
 python -m scripts.chat_cli -p "Who are you?"
 python -m scripts.chat_cli -p "Tell me about Mr. Charles Dickens"

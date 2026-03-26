@@ -4,7 +4,7 @@
 #
 # Usage:
 #   git clone https://github.com/davidfish-g/bellechat.git /workspace/bellechat
-#   cd /workspace/bellechat && bash runs/setup.sh
+#   cd /workspace/bellechat && bash runs/bellechat/setup.sh
 #
 set -e
 
@@ -13,7 +13,7 @@ echo "=== bellechat setup ==="
 cd /workspace/bellechat
 
 # Install system deps
-apt-get update -qq && apt-get install -y -qq rsync > /dev/null 2>&1
+apt-get update -qq && apt-get install -y -qq rsync screen > /dev/null 2>&1
 echo "[1/5] System deps installed"
 
 # Set up Python environment
@@ -32,7 +32,9 @@ if [ -n "$WANDB_API_KEY" ]; then
     echo "export WANDB_API_KEY=$WANDB_API_KEY" >> ~/.bashrc
     echo "[4/5] Environment configured (wandb enabled)"
 else
-    echo "[4/5] Environment configured (set WANDB_API_KEY to enable wandb)"
+    echo "[4/5] WARNING: WANDB_API_KEY not set. Training logs won't be saved."
+    echo "       Get your key at https://wandb.ai/authorize then run:"
+    echo "       export WANDB_API_KEY=your_key_here"
 fi
 
 # Verify GPUs
@@ -52,4 +54,8 @@ echo "  # SFT conversations (~50 MB)"
 echo "  rsync -avz ~/.cache/bellechat/*_conversations.jsonl root@<POD_IP>:/workspace/bellechat/.cache/bellechat/ -e \"ssh -p <PORT> -i ~/.ssh/id_ed25519\""
 echo ""
 echo "Then start training:"
-echo "  bash runs/train.sh"
+echo "  export WANDB_API_KEY=your_key_here  # from https://wandb.ai/authorize"
+echo "  screen -S train bash runs/bellechat/train.sh"
+echo ""
+echo "To detach from screen: Ctrl+A then D"
+echo "To reattach: screen -r train"
