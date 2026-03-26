@@ -11,3 +11,6 @@ eval_bundle/
 # Local setup
 CLAUDE.md
 wandb/
+
+# bellechat data (lives in ~/.cache/bellechat, not in repo)
+data/**/download.log
