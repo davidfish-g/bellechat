@@ -13,7 +13,7 @@ echo "=== bellechat setup ==="
 cd /workspace/bellechat
 
 # Install system deps
-apt-get update -qq && apt-get install -y -qq rsync screen > /dev/null 2>&1
+apt-get update -qq && apt-get install -y -qq rsync screen python3-dev > /dev/null 2>&1
 echo "[1/5] System deps installed"
 
 # Set up Python environment
@@ -33,8 +33,6 @@ if [ -n "$WANDB_API_KEY" ]; then
     echo "[4/5] Environment configured (wandb enabled)"
 else
     echo "[4/5] WARNING: WANDB_API_KEY not set. Training logs won't be saved."
-    echo "       Get your key at https://wandb.ai/authorize then run:"
-    echo "       export WANDB_API_KEY=your_key_here"
 fi
 
 # Verify GPUs
