@@ -4,11 +4,9 @@
 # Run on an 8xH100 node after setup.sh and data upload.
 #
 # Usage:
-#   screen -S train bash runs/bellechat/train.sh
-#   screen -S train bash runs/bellechat/train.sh d20              # smaller model
-#   WANDB_RUN=my-run screen -S train bash runs/bellechat/train.sh # custom run name
-#
-# Detach: Ctrl+A then D | Reattach: screen -r train
+#   bash runs/bellechat/train.sh                          # default d24
+#   bash runs/bellechat/train.sh d20                      # smaller model
+#   WANDB_RUN=my-run bash runs/bellechat/train.sh         # custom run name
 #
 set -e
 

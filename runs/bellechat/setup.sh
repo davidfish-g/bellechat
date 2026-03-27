@@ -13,7 +13,7 @@ echo "=== bellechat setup ==="
 cd /workspace/bellechat
 
 # Install system deps
-apt-get update -qq && apt-get install -y -qq rsync screen python3-dev > /dev/null 2>&1
+apt-get update -qq && apt-get install -y -qq rsync python3-dev > /dev/null 2>&1
 echo "[1/5] System deps installed"
 
 # Set up Python environment
@@ -53,7 +53,4 @@ echo "  rsync -avz ~/.cache/bellechat/*_conversations.jsonl root@<POD_IP>:/works
 echo ""
 echo "Then start training:"
 echo "  export WANDB_API_KEY=your_key_here  # from https://wandb.ai/authorize"
-echo "  screen -S train bash runs/bellechat/train.sh"
-echo ""
-echo "To detach from screen: Ctrl+A then D"
-echo "To reattach: screen -r train"
+echo "  bash runs/bellechat/train.sh"
