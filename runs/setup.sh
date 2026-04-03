@@ -4,7 +4,7 @@
 #
 # Usage:
 #   git clone https://github.com/davidfish-g/bellechat.git /workspace/bellechat
-#   cd /workspace/bellechat && bash runs/bellechat/setup.sh
+#   cd /workspace/bellechat && bash runs/setup.sh
 #
 set -e
 
@@ -53,4 +53,4 @@ echo "  rsync -avz ~/.cache/bellechat/*_conversations.jsonl root@<POD_IP>:/works
 echo ""
 echo "Then start training:"
 echo "  export WANDB_API_KEY=your_key_here  # from https://wandb.ai/authorize"
-echo "  bash runs/bellechat/train.sh"
+echo "  bash runs/train.sh"

@@ -2,7 +2,7 @@
 Base class for all Tasks.
 A Task is basically a dataset of conversations, together with some
 metadata and often also evaluation criteria.
-Example tasks: MMLU, ARC-Easy, ARC-Challenge, GSM8K, HumanEval, SmolTalk.
+Example tasks: CustomJSON (general, identity, boundary conversations).
 """
 
 import random
@@ -108,40 +108,3 @@ class TaskSequence(Task):
                 return self.tasks[task_idx][index]
             index -= task_length
 
-
-def render_mc(question, letters, choices):
-    """
-    The common multiple choice rendering format we will use.
-
-    Note two important design decisions:
-    1)
-    Bigger models don't care as much, but smaller models prefer to have
-    the letter *after* the choice, which results in better binding.
-    2)
-    There is no whitespace between the delimiter (=) and the letter.
-    This is actually critical because the tokenizer has different token ids
-    for " A" vs. "A". The assistant responses will be just the letter itself,
-    i.e. "A", so it is important that here in the prompt it is the exact same
-    token, i.e. "A" with no whitespace before it. Again, bigger models don't care
-    about this too much, but smaller models do care about some of these details.
-    """
-    query = f"Multiple Choice question: {question}\n"
-    query += "".join([f"- {choice}={letter}\n" for letter, choice in zip(letters, choices)])
-    query += "\nRespond only with the letter of the correct answer."
-    return query
-
-
-if __name__ == "__main__":
-    # very lightweight test of slicing
-    from tasks.mmlu import MMLU
-
-    ds = MMLU(subset="auxiliary_train", split="train")
-    print("Length of MMLU: ", len(ds))
-    ex = ds[5]
-    print("5th example: ", ex)
-
-    ds = MMLU(subset="auxiliary_train", split="train", start=5, stop=10)
-    print("Length of sliced MMLU[5:10]: ", len(ds))
-    print("0th example of sliced MMLU: ", ds[0])
-
-    print("They match: ", ex == ds[0])

@@ -4,9 +4,9 @@
 # Run on an 8xH100 node after setup.sh and data upload.
 #
 # Usage:
-#   bash runs/bellechat/train.sh                          # default d24
-#   bash runs/bellechat/train.sh d20                      # smaller model
-#   WANDB_RUN=my-run bash runs/bellechat/train.sh         # custom run name
+#   bash runs/train.sh                          # default d24
+#   bash runs/train.sh d20                      # smaller model
+#   WANDB_RUN=my-run bash runs/train.sh         # custom run name
 #
 set -e
 
@@ -37,7 +37,7 @@ fi
 SHARD_COUNT=$(ls "$BELLECHAT_BASE_DIR/shards/"*.parquet 2>/dev/null | wc -l | tr -d ' ')
 if [ "$SHARD_COUNT" -eq 0 ]; then
     echo "ERROR: No shards found in $BELLECHAT_BASE_DIR/shards/"
-    echo "Upload data first. See runs/bellechat/setup.sh for instructions."
+    echo "Upload data first. See runs/setup.sh for instructions."
     exit 1
 fi
 echo "Found $SHARD_COUNT shards"
@@ -77,7 +77,6 @@ torchrun --standalone --nproc_per_node=8 -m scripts.base_eval -- --device-batch-
 echo "=== [4/5] Supervised fine-tuning ==="
 torchrun --standalone --nproc_per_node=8 -m scripts.chat_sft -- \
     --device-batch-size=16 \
-    --chatcore-every=-1 \
     --run="$WANDB_RUN"
 
 # Step 5: Test
