@@ -18,9 +18,8 @@ Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellecha
 ```bash
 git clone https://github.com/davidfish-g/bellechat.git
 cd bellechat
-pip install uv && uv sync --extra cpu
+uv sync --extra cpu  # or --extra gpu for CUDA
 source .venv/bin/activate
-pip install huggingface-hub
 ```
 
 Download the model:
@@ -39,12 +38,10 @@ snapshot_download(
 Run it:
 
 ```bash
-# Web UI (ChatGPT-style)
 python -m scripts.chat_web
-
-# Or chat in the terminal
-python -m scripts.chat_cli
 ```
+
+Opens a chat interface at [http://localhost:8000](http://localhost:8000).
 
 ## Data sources
 
