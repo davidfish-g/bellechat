@@ -29,6 +29,7 @@ dependencies = [
     "lxml>=5.0.0",
     "rdflib>=7.0.0",
     "internetarchive>=5.8.0",
+    "huggingface-hub>=0.34.4",
 ]
 
 [dependency-groups]
