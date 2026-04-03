@@ -1,6 +1,6 @@
 # bellechat
 
-A conversational LLM trained from scratch on text published before 1914. It knows only what the world knew during the Belle Époque — no world wars, no nuclear physics, no antibiotics, no aviation beyond the Wright brothers, no radio broadcasting, no Soviet Union. You can talk to it and it will answer as a knowledgeable, articulate person from 1913 would.
+A conversational LLM trained from scratch on text published before 1914—no world wars, no nuclear physics, no antibiotics, no Soviet Union, etc. You can talk to it and it will answer as a knowledgeable, articulate person from 1913 would.
 
 Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat).
 
