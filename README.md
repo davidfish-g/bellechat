@@ -60,7 +60,3 @@ python -m scripts.chat_web  # opens a chat interface at http://localhost:8000
 - **Boilerplate removal:** Modern Project Gutenberg and Internet Archive headers/footers are stripped at shard time.
 - **Anachronism detection:** Corpus scanned for post-1914 terms. Contamination rate: <0.01%.
 - **SFT conversations:** Generated with explicit constraints against modern knowledge leakage.
-
-## Acknowledgments
-
-Built on [nanochat](https://github.com/karpathy/nanochat) by Andrej Karpathy.
