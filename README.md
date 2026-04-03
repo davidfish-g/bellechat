@@ -13,6 +13,8 @@ Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat).
 
 Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellechat)
 
+**Note:** This is a 1.4B parameter model so expect some incoherence. Also, the SFT is likely overfit. I plan to scale significantly and improve SFT when I have more resources.
+
 ## Quick start
 
 ```bash
@@ -38,10 +40,9 @@ snapshot_download(
 Run it:
 
 ```bash
-python -m scripts.chat_web
-```
+python -m scripts.chat_web  # opens a chat interface at http://localhost:8000
 
-Opens a chat interface at [http://localhost:8000](http://localhost:8000).
+```
 
 ## Data sources
 
