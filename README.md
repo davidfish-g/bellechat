@@ -17,32 +17,15 @@ Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellecha
 
 ## Quick start
 
+**Requirements:** Python 3.10+ and Git.
+
 ```bash
 git clone https://github.com/davidfish-g/bellechat.git
 cd bellechat
-uv sync --extra cpu  # or --extra gpu for CUDA
-source .venv/bin/activate
+./run.sh
 ```
 
-Download the model:
-
-```bash
-python -c "
-from huggingface_hub import snapshot_download
-snapshot_download(
-    'david-fish/bellechat',
-    local_dir='~/.cache/bellechat',
-    allow_patterns=['chatsft_checkpoints/**', 'tokenizer/**'],
-)
-"
-```
-
-Run it:
-
-```bash
-python -m scripts.chat_web  # opens a chat interface at http://localhost:8000
-
-```
+`run.sh` installs dependencies, downloads the model (~2 GB), and starts the server. Then open http://localhost:8000 in your browser.
 
 ## Data sources
 
