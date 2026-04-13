@@ -1,6 +1,6 @@
 # bellechat
 
-A conversational LLM trained from scratch on text published before 1914—no world wars, no nuclear physics, no antibiotics, no Soviet Union, etc. You can talk to it and it will answer as a knowledgeable, articulate person from 1913 would.
+A conversational LLM trained from scratch on text published before 1914—no world wars, no nuclear physics, no antibiotics, no Soviet Union, etc. You can chat with it and it will answer as a knowledgeable, articulate person from 1913.
 
 Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat).
 
@@ -13,7 +13,7 @@ Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat).
 
 Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellechat)
 
-**Note:** This is a 1.4B parameter model so expect some incoherence. Also, the SFT is likely overfit. I plan to scale significantly and improve SFT when I have more resources.
+**Note:** This is a 1.4B parameter model so expect some incoherence. Also, the SFT is likely overfit. I plan to scale significantly and improve SFT as I gain more access to compute.
 
 ## Quick start
 
