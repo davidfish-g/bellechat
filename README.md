@@ -22,10 +22,10 @@ Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellecha
 ```bash
 git clone https://github.com/davidfish-g/bellechat.git
 cd bellechat
-./run.sh
+python run.py
 ```
 
-`run.sh` installs dependencies, downloads the model (~2 GB), and starts the server. Then open http://localhost:8000 in your browser.
+This installs dependencies, downloads the model (~2 GB), and starts the server. Then open http://localhost:8000 in your browser.
 
 ## Data sources
 

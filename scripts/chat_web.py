@@ -40,7 +40,7 @@ import random
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse, HTMLResponse, FileResponse
+from fastapi.responses import StreamingResponse, HTMLResponse
 from pydantic import BaseModel
 from typing import List, Optional, AsyncGenerator
 from dataclasses import dataclass
@@ -246,11 +246,6 @@ async def root():
     return HTMLResponse(content=html_content)
 
 
-@app.get("/logo.svg")
-async def logo():
-    """Serve the NanoChat logo for favicon and header."""
-    logo_path = os.path.join("nanochat", "logo.svg")
-    return FileResponse(logo_path, media_type="image/svg+xml")
 
 async def generate_stream(
     worker: Worker,
