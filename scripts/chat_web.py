@@ -245,7 +245,11 @@ async def root():
     )
     return HTMLResponse(content=html_content)
 
-
+@app.get("/favicon.svg")
+async def favicon():
+    favicon_path = os.path.join(os.path.dirname(__file__), "..", "nanochat", "favicon.svg")
+    from fastapi.responses import FileResponse
+    return FileResponse(favicon_path, media_type="image/svg+xml")
 
 async def generate_stream(
     worker: Worker,

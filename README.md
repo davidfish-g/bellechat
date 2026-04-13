@@ -25,7 +25,7 @@ cd bellechat
 python run.py
 ```
 
-This installs dependencies, downloads the model (~2 GB), and starts the server. Then open http://localhost:8000 in your browser.
+This installs dependencies, downloads the model (~2 GB), starts the server, and opens the chat interface at http://localhost:8000 in your browser.
 
 ## Data sources
 
