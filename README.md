@@ -1,23 +1,12 @@
 # bellechat
 
-A conversational LLM trained from scratch on text published before 1914—no world wars, no nuclear physics, no antibiotics, no Soviet Union, etc. You can chat with it and it will answer as a knowledgeable, articulate person from 1913.
+A 1.4 billion parameter LLM trained from scratch on text published before 1914. It has never heard of the world wars, nuclear physics, antibiotics or the Soviet Union, and it answers as a knowledgeable, articulate person from 1913.
 
-Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat).
-
-## Model
-
-- **Parameters:** 1.4B (d24 transformer, 24 layers, 1536 dim, 12 heads)
-- **Training data:** 13.3B tokens from pre-1914 text (Project Gutenberg, 1911 Encyclopaedia Britannica, Chronicling America newspapers, Internet Archive)
-- **SFT:** 6,200 synthetic conversations for persona and conversational ability
-- **Training time:** ~3.5 hours pretraining + SFT on 8xH100 SXM with FP8
-
-Model weights: [david-fish/bellechat](https://huggingface.co/david-fish/bellechat)
-
-**Note:** This is a 1.4B parameter model so expect some incoherence. Also, the SFT is likely overfit. I plan to scale significantly and improve SFT as I gain more access to compute.
+Built as a fork of Karpathy's [nanochat](https://github.com/karpathy/nanochat). Weights are on [Hugging Face](https://huggingface.co/david-fish/bellechat).
 
 ## Quick start
 
-**Requirements:** Python 3.10+ and Git.
+Requires Python 3.10+ and Git.
 
 ```bash
 git clone https://github.com/davidfish-g/bellechat.git
@@ -25,21 +14,29 @@ cd bellechat
 python run.py
 ```
 
-This installs dependencies, downloads the model, starts the server, and opens the chat interface at http://localhost:8000 in your browser.
+This installs dependencies, downloads the model (~4 GB), and opens the chat at http://localhost:8000 once the model has loaded. To uninstall, delete the `bellechat` folder and `~/.cache/bellechat`.
 
-## Data sources
+## Model
 
-| Source | Files | Tokens | Description |
-|--------|-------|--------|-------------|
-| Project Gutenberg | 20,729 | 2.68B | Pre-1914 books filtered by author death date |
-| 1911 Britannica | 36,221 | 0.07B | Complete 11th edition (5x upweighted in training) |
-| Chronicling America | 1.3M | 6.7B | LOC newspaper OCR, 80% quality filtered |
-| Internet Archive | 21,935 | 2.3B | Pre-1914 texts via IA search API |
+| | |
+|---|---|
+| Parameters | 1.4B (24 layers, 1536 dim, 12 heads) |
+| Pretraining | 11.8B tokens of pre-1914 text |
+| Fine-tuning | 6,200 synthetic conversations for conversational ability |
+| Training time | ~3.5 hours on 8×H100 with FP8 |
 
-## Data Quality Improvements
+It's a small model, so expect some incoherence, and the fine-tuning is likely overfit.
 
-- **Date filtering:** Gutenberg books filtered by author death date. Newspaper pages filtered by publication date in file path. IA texts filtered by date metadata.
-- **OCR quality:** Newspaper pages below 80% word validity ratio are rejected.
-- **Boilerplate removal:** Modern Project Gutenberg and Internet Archive headers/footers are stripped at shard time.
-- **Anachronism detection:** Corpus scanned for post-1914 terms. Contamination rate: <0.01%.
-- **SFT conversations:** Generated with explicit constraints against modern knowledge leakage.
+## Data
+
+| Source | Files | Tokens | Notes |
+|---|---|---|---|
+| Project Gutenberg | 20,729 | 2.68B | Filtered by author death date |
+| 1911 Encyclopaedia Britannica | 36,221 | 0.07B | Complete 11th edition, 5× upweighted |
+| Chronicling America | 1.3M | 6.7B | Library of Congress newspaper OCR, filtered by date and OCR quality |
+| Internet Archive | 21,935 | 2.3B | Filtered by date metadata |
+
+- Newspaper pages with under 80% valid words are dropped.
+- Modern Project Gutenberg and Internet Archive headers and footers are stripped.
+- The corpus was scanned for post-1914 terms; contamination is under 0.01%.
+- Fine-tuning conversations were generated with explicit constraints against modern knowledge.
