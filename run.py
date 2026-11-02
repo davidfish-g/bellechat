@@ -56,7 +56,10 @@ snapshot_download(
     print("Starting bellechat...")
     print("Press Ctrl+C to stop.")
     print()
-    subprocess.run([*uv, "run", "python", "-m", "scripts.chat_web"], check=True)
+    try:
+        subprocess.run([*uv, "run", "python", "-m", "scripts.chat_web"], check=True)
+    except KeyboardInterrupt:
+        pass  # Ctrl+C already stopped the server cleanly
 
 if __name__ == "__main__":
     main()
